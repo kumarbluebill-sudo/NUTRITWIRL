@@ -1,50 +1,30 @@
-# NutriTwirl — Storefront
+# NutriTwirl storefront — deploy guide
 
-A single self-contained `index.html` (no build step, no dependencies) for the NutriTwirl millet noodles & pasta storefront. Cart, checkout, and the "Book an Order" form all run client-side with `localStorage` — there is no backend, so no real payments are processed (see "Payments" below).
+One file, `index.html`. No build step, no dependencies, nothing else needed.
 
-## Deploy on GitHub Pages
+## GitHub Pages (exact steps)
 
-1. Create a new GitHub repository and push this folder's contents to it (root of the repo, or a `docs/` folder — either works).
-2. In the repo: **Settings → Pages → Source**, choose the branch and folder containing `index.html`, then save.
-3. GitHub will publish the site at `https://<your-username>.github.io/<repo-name>/` within a minute or two.
+1. Create a new repository on GitHub (any name).
+2. Click **Add file → Upload files**, and upload `index.html` directly — do NOT upload a folder, and do NOT put it inside a subfolder. It must land at the repo's root, so the repo's main file list shows `index.html` right there.
+3. Commit the upload.
+4. Go to **Settings → Pages**.
+5. Under **Build and deployment → Source**, choose **Deploy from a branch**.
+6. Under **Branch**, choose `main` and folder `/ (root)`, then **Save**.
+7. Wait ~1 minute. Refresh the Settings → Pages screen — it will show "Your site is live at https://<your-username>.github.io/<repo-name>/".
+8. Open that exact URL (including the `/<repo-name>/` part).
 
-```bash
-git init
-git add .
-git commit -m "NutriTwirl storefront"
-git branch -M main
-git remote add origin https://github.com/<your-username>/<repo-name>.git
-git push -u origin main
-```
-Then enable Pages in the repo settings as above.
+## Vercel (exact steps — no GitHub needed)
 
-## Deploy on Vercel
+1. Go to **vercel.com/new** and log in.
+2. Put `index.html` alone in an empty folder on your computer.
+3. Drag that folder onto the "Deploy" drop zone on that page (not the "Import Git Repository" box).
+4. Vercel deploys instantly and gives you a live `.vercel.app` URL.
 
-**Option A — Vercel dashboard (no CLI):**
-1. Push this folder to a GitHub repo (steps above).
-2. Go to vercel.com → **Add New → Project** → import that repo.
-3. Framework preset: choose **Other** (it's a static site — no build command, no output directory needed). Deploy.
+## If you still get a 404
+It's almost always one of these:
+- `index.html` isn't at the root of the branch/folder your host is actually serving from.
+- You're visiting the wrong URL (missing the `/<repo-name>/` part for GitHub Pages).
+- Not enough time has passed since your last change (GitHub Pages takes ~30–90 seconds to rebuild).
 
-**Option B — Vercel CLI:**
-```bash
-npm i -g vercel
-cd nutritwirl-site
-vercel        # first deploy, follow the prompts
-vercel --prod # promote to production
-```
-The included `vercel.json` just enables clean URLs; it's optional and safe to delete if you don't need it.
-
-## Files
-- `index.html` — the entire site (HTML/CSS/JS in one file, product photos embedded as base64 so there are no separate image files to manage)
-- `vercel.json` — optional Vercel config
-- `README.md` — this file
-
-## Payments — read before going live
-This storefront's checkout and "Book an Order" form collect the order details and show a confirmation, but they do **not** charge any card, UPI ID, or account — a static HTML file has nowhere safe to hold payment API keys. Right now it works as an **order-intake form**: you'll want to follow up by phone/WhatsApp/email to confirm and collect payment (COD, a UPI payment link, etc.).
-
-To accept real online payments, you'd need:
-1. A small backend (Node.js, PHP, etc. — Vercel Functions work well alongside this static site) that talks to a gateway like **Razorpay** or **Cashfree** (the two most common in India, supporting UPI/cards/netbanking).
-2. That backend creates an order server-side and verifies payment on success — the API keys never touch the browser.
-3. Swap the "Place order" button in `index.html` to call your new backend endpoint instead of the local confirmation screen.
-
-Happy to help write that backend when you're ready for it.
+## Payments — read before taking real orders
+This page's checkout and "Book an Order" form collect and confirm orders but do not charge any card or UPI ID — a static file can't hold payment API keys safely. Use it as an order-intake form (confirm and collect payment by phone/WhatsApp/UPI link) until a real backend with Razorpay or Cashfree is added.

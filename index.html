@@ -311,8 +311,8 @@
     </div>
     <div class="why-item">
       <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 7 12 3 4 7l8 4 8-4Z"/><path d="M4 7v10l8 4 8-4V7M12 11v10"/></svg></div>
-      <h3>Free PAN-India delivery</h3>
-      <p>UPI, card or cash on delivery — shipped fresh, free shipping on every order.</p>
+      <h3>PAN-India delivery</h3>
+      <p>UPI, card or cash on delivery — flat ₹60 shipping, free on the combo box.</p>
     </div>
   </div>
 </section>
@@ -322,7 +322,7 @@
     <div class="shop-head">
       <div>
         <h2>The NutriTwirl range</h2>
-        <p>Five millet noodles, four millet pasta shapes, and a combo box — free shipping on every order.</p>
+        <p>Five millet noodles, four millet pasta shapes, and a combo box — ₹60 shipping, free on the combo.</p>
       </div>
       <div class="filters" id="filters">
         <button class="filter-btn active" data-cat="all">All</button>
@@ -471,7 +471,8 @@
   };
 
   var money = function(n){ return "₹" + n.toLocaleString("en-IN"); };
-  var FREE_SHIP_MIN = 0, SHIP_FEE = 0;
+  var SHIP_FEE = 60;
+  function cartHasFreeShipItem(){ return !!state.cart["combo"]; }
 
   var state = { cart: {}, activeCat: "all" };
   try{
@@ -533,7 +534,7 @@
       }).join("");
     }
     var sub = cartSubtotal();
-    var ship = sub===0 ? 0 : (sub >= FREE_SHIP_MIN ? 0 : SHIP_FEE);
+    var ship = sub===0 ? 0 : (cartHasFreeShipItem() ? 0 : SHIP_FEE);
     document.getElementById("subtotalVal").textContent = money(sub);
     document.getElementById("shipVal").textContent = sub===0 ? "—" : (ship===0 ? "Free" : money(ship));
     document.getElementById("totalVal").textContent = money(sub+ship);
@@ -592,7 +593,7 @@
   function renderPaymentStep(){
     document.getElementById("modalTitle").textContent = "Payment method";
     var sub = cartSubtotal();
-    var ship = sub >= FREE_SHIP_MIN ? 0 : SHIP_FEE;
+    var ship = cartHasFreeShipItem() ? 0 : SHIP_FEE;
     var options = [
       { id:"upi", label:"UPI (Google Pay, PhonePe, Paytm)" },
       { id:"card", label:"Credit / Debit card" },
@@ -635,7 +636,7 @@
         '<svg class="confirm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><path d="m8 12 3 3 5-6"/></svg>' +
         '<p style="color:var(--ink-soft);font-weight:600">Thank you, '+(checkoutData.name||"friend")+'. Your order is confirmed.</p>' +
         '<p class="order-id">'+orderId+'</p>' +
-        '<p class="confirm-note">Paying by <strong>'+payLabel+'</strong>. We\\'ll send delivery updates to '+ (checkoutData.phone||"your phone") +' and ship to '+ (checkoutData.address||"your address") +'.</p>' +
+        '<p class="confirm-note">Paying by <strong>'+payLabel+'</strong>. We will send delivery updates to '+ (checkoutData.phone||"your phone") +' and ship to '+ (checkoutData.address||"your address") +'.</p>' +
         '<div class="modal-actions"><button class="btn-full" id="closeConfirm" style="flex:1">Continue shopping</button></div>' +
       '</div>';
     document.getElementById("closeConfirm").addEventListener("click", function(){
@@ -726,7 +727,7 @@
         '<p>Thank you, '+name+'! Your booking is confirmed.</p>' +
         '<p class="order-id">'+bookingId+'</p>' +
         '<p>'+(product?product.name+' × '+qty+' — '+money(total):'') + (notes?'<br>Note: '+notes:'') + '</p>' +
-        '<p>We\\'ll call or WhatsApp you on '+phone+' to confirm and collect payment via <strong>'+payLabel+'</strong>, then ship to your address in '+addr+' ('+pin+').</p>' +
+        '<p>We will call or WhatsApp you on '+phone+' to confirm and collect payment via <strong>'+payLabel+'</strong>, then ship to your address in '+addr+' ('+pin+').</p>' +
         '<button class="btn-full" id="bookAnother">Book another order</button>' +
       '</div>';
     document.getElementById("bookAnother").addEventListener("click", function(){
