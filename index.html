@@ -471,6 +471,10 @@
   };
 
   var money = function(n){ return "₹" + n.toLocaleString("en-IN"); };
+  var WHATSAPP_NUMBER = "919487007583";
+  function buildWaUrl(lines){
+    return "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(lines.join("\n"));
+  }
   var SHIP_FEE = 60;
   function cartHasFreeShipItem(){ return !!state.cart["combo"]; }
 
@@ -629,21 +633,45 @@
   function placeOrder(){
     var orderId = "NTW" + Math.floor(100000 + Math.random()*899999);
     var payLabel = checkoutData.pay==="cod" ? "Cash on delivery" : checkoutData.pay==="upi" ? "UPI" : "Card";
+    var ids = Object.keys(state.cart).filter(function(k){ return state.cart[k] > 0; });
+    var itemLines = ids.map(function(id){
+      var p = productById(id);
+      return "- " + p.name + " x" + state.cart[id] + " (" + money(p.price*state.cart[id]) + ")";
+    });
+    var sub = cartSubtotal();
+    var ship = cartHasFreeShipItem() ? 0 : SHIP_FEE;
+    var waLines = [
+      "New NutriTwirl order: " + orderId,
+      "Name: " + (checkoutData.name||""),
+      "Phone: " + (checkoutData.phone||""),
+      "Address: " + (checkoutData.address||"") + ", PIN " + (checkoutData.pincode||""),
+      "Items:"
+    ].concat(itemLines).concat([
+      "Shipping: " + (ship===0 ? "Free" : money(ship)),
+      "Total: " + money(sub+ship),
+      "Payment method: " + payLabel
+    ]);
+    var waUrl = buildWaUrl(waLines);
     document.getElementById("modalTitle").textContent = "Order received";
     document.getElementById("modalBody").innerHTML = '' +
       '<div class="steps"><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot done"></div></div>' +
       '<div class="confirm-wrap">' +
         '<svg class="confirm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><path d="m8 12 3 3 5-6"/></svg>' +
-        '<p style="color:var(--ink-soft);font-weight:600">Thank you, '+(checkoutData.name||"friend")+'. Your order is confirmed.</p>' +
+        '<p style="color:var(--ink-soft);font-weight:600">Thank you, '+(checkoutData.name||"friend")+'. One more step to confirm your order.</p>' +
         '<p class="order-id">'+orderId+'</p>' +
-        '<p class="confirm-note">Paying by <strong>'+payLabel+'</strong>. We will send delivery updates to '+ (checkoutData.phone||"your phone") +' and ship to '+ (checkoutData.address||"your address") +'.</p>' +
-        '<div class="modal-actions"><button class="btn-full" id="closeConfirm" style="flex:1">Continue shopping</button></div>' +
+        '<p class="confirm-note">Tap below to send your order details to us on WhatsApp. We will confirm your order and collect payment (<strong>'+payLabel+'</strong>) there, then ship to '+ (checkoutData.address||"your address") +'.</p>' +
+        '<div class="modal-actions"><a href="'+waUrl+'" target="_blank" rel="noopener" class="btn-full" id="sendWaOrder" style="flex:2;text-decoration:none;text-align:center;display:flex;align-items:center;justify-content:center">Send order on WhatsApp</a></div>' +
+        '<div class="modal-actions"><button class="btn-secondary" id="closeConfirm" style="flex:1">Continue shopping</button></div>' +
       '</div>';
     document.getElementById("closeConfirm").addEventListener("click", function(){
       state.cart = {};
       renderDrawer();
       closeModal();
       closeDrawer();
+    });
+    document.getElementById("sendWaOrder").addEventListener("click", function(){
+      state.cart = {};
+      renderDrawer();
     });
   }
 
@@ -720,15 +748,26 @@
     var payLabel = pay==="cod" ? "Cash on delivery" : pay==="upi" ? "UPI" : "Card";
     var bookingId = "NTB" + Math.floor(100000 + Math.random()*899999);
     var total = product ? product.price*qty : 0;
+    var waLines = [
+      "New NutriTwirl booking: " + bookingId,
+      "Name: " + name,
+      "Phone: " + phone,
+      "Address: " + addr + ", PIN " + pin,
+      "Product: " + (product ? product.name + " x" + qty + " (" + money(total) + ")" : ""),
+      "Payment method: " + payLabel
+    ];
+    if(notes) waLines.push("Notes: " + notes);
+    var waUrl = buildWaUrl(waLines);
     var card = document.getElementById("bookCard");
     card.innerHTML = '' +
       '<div class="book-confirm">' +
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><path d="m8 12 3 3 5-6"/></svg>' +
-        '<p>Thank you, '+name+'! Your booking is confirmed.</p>' +
+        '<p>Thanks, '+name+'! One more step to confirm your booking.</p>' +
         '<p class="order-id">'+bookingId+'</p>' +
         '<p>'+(product?product.name+' × '+qty+' — '+money(total):'') + (notes?'<br>Note: '+notes:'') + '</p>' +
-        '<p>We will call or WhatsApp you on '+phone+' to confirm and collect payment via <strong>'+payLabel+'</strong>, then ship to your address in '+addr+' ('+pin+').</p>' +
-        '<button class="btn-full" id="bookAnother">Book another order</button>' +
+        '<p>Tap below to send these details to us on WhatsApp — we will confirm and collect payment (<strong>'+payLabel+'</strong>) there, then ship to '+addr+' ('+pin+').</p>' +
+        '<a href="'+waUrl+'" target="_blank" rel="noopener" class="btn-full" id="sendWaBooking" style="text-decoration:none;display:flex;align-items:center;justify-content:center">Send booking on WhatsApp</a>' +
+        '<button class="btn-secondary" id="bookAnother" style="margin-top:10px;width:100%">Book another order</button>' +
       '</div>';
     document.getElementById("bookAnother").addEventListener("click", function(){
       renderBookingForm();
