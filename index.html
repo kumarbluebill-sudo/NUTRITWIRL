@@ -169,6 +169,10 @@
   .foot-brand{ display:flex; align-items:center; gap:10px; margin-bottom:14px; }
   .foot-brand img{ height:40px; width:40px; border-radius:50%; }
   .foot-brand span{ font-family:'Fredoka',sans-serif; font-weight:600; font-size:1.15rem; color:#fff; }
+  .social-row{ display:flex; gap:10px; margin-top:18px; }
+  .social-icon{ width:38px; height:38px; border-radius:50%; background:rgba(255,255,255,0.14); display:flex; align-items:center; justify-content:center; color:#EFFBE6; transition:background .15s, transform .15s; }
+  .social-icon:hover{ background:var(--orange); color:#fff; transform:translateY(-2px); }
+  .social-icon svg{ width:18px; height:18px; }
   footer p{ color:#CFE8BE; font-size:0.88rem; line-height:1.6; max-width:36ch; font-weight:600; }
   footer h4{ font-family:'Nunito',sans-serif; font-size:0.78rem; letter-spacing:0.05em; color:#fff; margin-bottom:14px; text-transform:uppercase; font-weight:800; }
   footer ul{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:9px; }
@@ -392,6 +396,20 @@
         <span>NutriTwirl</span>
       </div>
       <p>Twirl into healthy goodness — millet and veggie noodles for lunchboxes, dinners and everything in between.</p>
+      <div class="social-row">
+        <a href="https://www.facebook.com/profile.php?id=61591531204024" target="_blank" rel="noopener" aria-label="NutriTwirl on Facebook" class="social-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5 3.66 9.15 8.44 9.94v-7.03H7.9v-2.91h2.54V9.85c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.23.2 2.23.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.44 2.91h-2.34V22c4.78-.79 8.44-4.94 8.44-9.94Z"/></svg>
+        </a>
+        <a href="https://www.instagram.com/nutritwirlfoods?utm_source=ig_web_button_share_sheet&stkn=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener" aria-label="NutriTwirl on Instagram" class="social-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+        </a>
+        <a href="https://youtube.com/@nutritwirlfoods?si=Zu40s3xeeVECRDtA" target="_blank" rel="noopener" aria-label="NutriTwirl on YouTube" class="social-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 12s0-3.4-.43-5.02a3.02 3.02 0 0 0-2.12-2.14C18.8 4.4 12 4.4 12 4.4s-6.8 0-8.45.44A3.02 3.02 0 0 0 1.43 6.98C1 8.6 1 12 1 12s0 3.4.43 5.02c.24.9 1.02 1.7 2.12 2.14C5.2 19.6 12 19.6 12 19.6s6.8 0 8.45-.44a3.02 3.02 0 0 0 2.12-2.14C23 15.4 23 12 23 12Zm-13.5 3.2V8.8l6 3.2Z"/></svg>
+        </a>
+        <a href="https://nutritwirl.vercel.app/" target="_blank" rel="noopener" aria-label="NutriTwirl website" class="social-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+        </a>
+      </div>
     </div>
     <div>
       <h4>Shop</h4>
